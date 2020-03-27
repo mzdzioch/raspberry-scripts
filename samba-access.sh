@@ -32,8 +32,8 @@ sudo mkdir /mnt/storage
 samba_not_installed=$(dpkg -s samba 2>&1 | grep "not installed")
 if [ -n "$samba_not_installed" ];then
   echo "Installing Samba"
-  sudo apt-get update && sudo apt-get upgrade
-  sudo apt-get install samba samba-common-bin
+  sudo apt-get -y update && sudo apt-get upgrade
+  sudo apt-get -y install samba samba-common-bin
 fi
 
 
@@ -86,8 +86,13 @@ sudo /etc/init.d/smbd restart
 sudo chmod -R $permissionLib $pathLib
 sudo chmod -R $permissionSto $pathSto
 
-sudo chown -R root:media $pathLib
-sudo chown -R root:media $pathSto
+sudo chown -R media:media $pathLib
+sudo chown -R media:media $pathSto
+
+# Give permissions to pi user and add permission to the group
+sudo usermod -a -G media pi
+sudo chmod g+w $pathLib
+sudo chmod g+w $pathSto
 
 sudo service smbd restart
 
